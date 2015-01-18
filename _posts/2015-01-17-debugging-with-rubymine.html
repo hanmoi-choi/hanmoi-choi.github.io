@@ -1,0 +1,27 @@
+---
+layout: post
+title: Debugging localhost with Rubymine
+excerpt:
+categories:
+  - Jekyll
+tags:
+  - [Jekyll,Org,Emacs]
+---
+<p>
+I had to spend one day to find out how to test localhost having subdomain when I use Rubymine IDE.
+Rubymine is great tool but there is no way to setup subdomain in <b>Run</b> configuration.
+</p>
+
+<p>
+So I had to change my MBP's hosts file; <code>/etc/hosts</code>
+</p>
+<ul class="org-ul">
+<li><b>myadbox.dev</b> is test domain and <b>audi</b> is subdomain
+</li>
+</ul>
+<div class="org-src-container">
+
+<pre class="src src-bash">127.0.0.1	localhost
+127.0.0.1 audi.myadbox.dev
+</pre>
+</div>

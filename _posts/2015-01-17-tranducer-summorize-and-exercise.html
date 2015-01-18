@@ -1,0 +1,206 @@
+---
+author: hanmoi choi
+layout: post
+title: Tranducer Summary
+excerpt: I would like to summorize what I learned while reading a really good blog about tranducer.
+categories:
+  - Clojure
+tags:
+  - [Clojure]
+---
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">About tranducer</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+All content is from this <a href="http://elbenshira.com/blog/understanding-transducers/">Really good explanation for Tranducer</a>
+</p>
+</div>
+
+<div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1">Power of reduce</h3>
+<div class="outline-text-3" id="text-1-1">
+<div class="org-src-container">
+
+<pre class="src src-clojure"><span style="color: #A1EFE4;">(</span>map inc <span style="color: #E6DB74;">(</span>range <span style="color: #AE81FF;">10</span><span style="color: #E6DB74;">)</span><span style="color: #A1EFE4;">)</span>
+<span style="color: #A1EFE4;">(</span>filter even? '<span style="color: #E6DB74;">(</span><span style="color: #AE81FF;">1</span> <span style="color: #AE81FF;">2</span> <span style="color: #AE81FF;">3</span> <span style="color: #AE81FF;">4</span> <span style="color: #AE81FF;">5</span> <span style="color: #AE81FF;">6</span> <span style="color: #AE81FF;">7</span> <span style="color: #AE81FF;">8</span> <span style="color: #AE81FF;">9</span> <span style="color: #AE81FF;">10</span><span style="color: #E6DB74;">)</span><span style="color: #A1EFE4;">)</span>
+
+<span style="color: #A1EFE4;">(</span><span style="color: #F92672;">defn</span> <span style="color: #A6E22E;">map-inc-reducer</span> <span style="color: #E6DB74;">[</span>res in<span style="color: #E6DB74;">]</span>
+  <span style="color: #E6DB74;">(</span>conj res <span style="color: #66D9EF;">(</span>inc in<span style="color: #66D9EF;">)</span><span style="color: #E6DB74;">)</span><span style="color: #A1EFE4;">)</span>
+
+<span style="color: #A1EFE4;">(</span>reduce map-inc-reducer <span style="color: #E6DB74;">[]</span> <span style="color: #E6DB74;">(</span>range <span style="color: #AE81FF;">10</span><span style="color: #E6DB74;">)</span><span style="color: #A1EFE4;">)</span>
+
+<span style="color: #A1EFE4;">(</span><span style="color: #F92672;">defn</span> <span style="color: #A6E22E;">map-reducer</span>
+  <span style="color: #E6DB74;">[</span>f<span style="color: #E6DB74;">]</span>
+  <span style="color: #E6DB74;">(</span><span style="color: #F92672;">fn</span> <span style="color: #66D9EF;">[</span>res in<span style="color: #66D9EF;">]</span>
+    <span style="color: #66D9EF;">(</span>conj res <span style="color: #FD971F;">(</span>f in<span style="color: #FD971F;">)</span><span style="color: #66D9EF;">)</span><span style="color: #E6DB74;">)</span><span style="color: #A1EFE4;">)</span>
+<span style="color: #FE87F4;">;; </span><span style="color: #FE87F4;">(map-reducer inc) == (map-inc-reducer)</span>
+<span style="color: #A1EFE4;">(</span>reduce <span style="color: #E6DB74;">(</span>map-reducer inc<span style="color: #E6DB74;">)</span> <span style="color: #E6DB74;">[]</span> <span style="color: #E6DB74;">(</span>range <span style="color: #AE81FF;">10</span><span style="color: #E6DB74;">)</span><span style="color: #A1EFE4;">)</span>
+
+<span style="color: #A1EFE4;">(</span><span style="color: #F92672;">defn</span> <span style="color: #A6E22E;">filter-even-reducer</span>
+  <span style="color: #E6DB74;">[</span>result input<span style="color: #E6DB74;">]</span>
+  <span style="color: #E6DB74;">(</span><span style="color: #F92672;">if</span> <span style="color: #66D9EF;">(</span>even? input<span style="color: #66D9EF;">)</span>
+    <span style="color: #66D9EF;">(</span>conj result input<span style="color: #66D9EF;">)</span>
+    result<span style="color: #E6DB74;">)</span><span style="color: #A1EFE4;">)</span>
+<span style="color: #A1EFE4;">(</span>reduce filter-even-reducer <span style="color: #E6DB74;">[]</span> '<span style="color: #E6DB74;">(</span><span style="color: #AE81FF;">1</span> <span style="color: #AE81FF;">2</span> <span style="color: #AE81FF;">3</span> <span style="color: #AE81FF;">4</span> <span style="color: #AE81FF;">5</span> <span style="color: #AE81FF;">6</span> <span style="color: #AE81FF;">7</span> <span style="color: #AE81FF;">8</span> <span style="color: #AE81FF;">9</span> <span style="color: #AE81FF;">10</span><span style="color: #E6DB74;">)</span><span style="color: #A1EFE4;">)</span>
+
+<span style="color: #A1EFE4;">(</span><span style="color: #F92672;">defn</span> <span style="color: #A6E22E;">filter-reducer</span>
+  <span style="color: #E6DB74;">[</span>f<span style="color: #E6DB74;">]</span>
+  <span style="color: #E6DB74;">(</span><span style="color: #F92672;">fn</span> <span style="color: #66D9EF;">[</span>res input<span style="color: #66D9EF;">]</span>
+    <span style="color: #66D9EF;">(</span><span style="color: #F92672;">if</span> <span style="color: #FD971F;">(</span>f input<span style="color: #FD971F;">)</span>
+      <span style="color: #FD971F;">(</span>conj res input<span style="color: #FD971F;">)</span>
+      res<span style="color: #66D9EF;">)</span><span style="color: #E6DB74;">)</span><span style="color: #A1EFE4;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-1-2" class="outline-3">
+<h3 id="sec-1-2">Another step in abstraction</h3>
+<div class="outline-text-3" id="text-1-2">
+</div><div id="outline-container-sec-1-2-1" class="outline-4">
+<h4 id="sec-1-2-1">codes below have a common part <b>conj</b>, which is reducing funciton</h4>
+<div class="outline-text-4" id="text-1-2-1">
+<div class="org-src-container">
+
+<pre class="src src-clojure"><span style="color: #A1EFE4;">(</span><span style="color: #F92672;">defn</span> <span style="color: #A6E22E;">map-reducer</span>
+  <span style="color: #E6DB74;">[</span>f<span style="color: #E6DB74;">]</span>
+  <span style="color: #E6DB74;">(</span><span style="color: #F92672;">fn</span> <span style="color: #66D9EF;">[</span>result input<span style="color: #66D9EF;">]</span>
+    <span style="color: #66D9EF;">(</span>conj result <span style="color: #FD971F;">(</span>f input<span style="color: #FD971F;">)</span><span style="color: #66D9EF;">)</span><span style="color: #E6DB74;">)</span><span style="color: #A1EFE4;">)</span>
+
+<span style="color: #A1EFE4;">(</span><span style="color: #F92672;">defn</span> <span style="color: #A6E22E;">filter-reducer</span>
+  <span style="color: #E6DB74;">[</span>predicate<span style="color: #E6DB74;">]</span>
+  <span style="color: #E6DB74;">(</span><span style="color: #F92672;">fn</span> <span style="color: #66D9EF;">[</span>result input<span style="color: #66D9EF;">]</span>
+    <span style="color: #66D9EF;">(</span><span style="color: #F92672;">if</span> <span style="color: #FD971F;">(</span>predicate input<span style="color: #FD971F;">)</span>
+      <span style="color: #FD971F;">(</span>conj result input<span style="color: #FD971F;">)</span>
+      result<span style="color: #66D9EF;">)</span><span style="color: #E6DB74;">)</span><span style="color: #A1EFE4;">)</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-1-3" class="outline-3">
+<h3 id="sec-1-3">Arrivaing at Tranducer</h3>
+<div class="outline-text-3" id="text-1-3">
+</div><div id="outline-container-sec-1-3-1" class="outline-4">
+<h4 id="sec-1-3-1">Let's pass <b>reducing fuction</b> as argument</h4>
+<div class="outline-text-4" id="text-1-3-1">
+<ul class="org-ul">
+<li><code>(reduce conj [] (range 10))</code> here, <b>conj</b> is reducing function and its type is <b>(result, input) -&gt; result</b>
+</li>
+</ul>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure"><span style="color: #A1EFE4;">(</span><span style="color: #F92672;">defn</span> <span style="color: #A6E22E;">mapping</span>
+  <span style="color: #E6DB74;">[</span>f<span style="color: #E6DB74;">]</span>
+  <span style="color: #E6DB74;">(</span><span style="color: #F92672;">fn</span> <span style="color: #66D9EF;">[</span>reducing<span style="color: #66D9EF;">]</span>
+    <span style="color: #66D9EF;">(</span><span style="color: #F92672;">fn</span> <span style="color: #FD971F;">[</span>result input<span style="color: #FD971F;">]</span>
+      <span style="color: #FD971F;">(</span>reducing result <span style="color: #A6E22E;">(</span>f input<span style="color: #A6E22E;">)</span><span style="color: #FD971F;">)</span><span style="color: #66D9EF;">)</span><span style="color: #E6DB74;">)</span><span style="color: #A1EFE4;">)</span>
+
+<span style="color: #A1EFE4;">(</span><span style="color: #F92672;">defn</span> <span style="color: #A6E22E;">filtering</span>
+  <span style="color: #E6DB74;">[</span>predicate<span style="color: #E6DB74;">]</span>
+  <span style="color: #E6DB74;">(</span><span style="color: #F92672;">fn</span> <span style="color: #66D9EF;">[</span>reducing<span style="color: #66D9EF;">]</span>
+    <span style="color: #66D9EF;">(</span><span style="color: #F92672;">fn</span> <span style="color: #FD971F;">[</span>result input<span style="color: #FD971F;">]</span>
+      <span style="color: #FD971F;">(</span><span style="color: #F92672;">if</span> <span style="color: #A6E22E;">(</span>predicate input<span style="color: #A6E22E;">)</span>
+        <span style="color: #A6E22E;">(</span>reducing result input<span style="color: #A6E22E;">)</span>
+        result<span style="color: #FD971F;">)</span><span style="color: #66D9EF;">)</span><span style="color: #E6DB74;">)</span><span style="color: #A1EFE4;">)</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-1-3-2" class="outline-4">
+<h4 id="sec-1-3-2">Arriving at transducers</h4>
+<div class="outline-text-4" id="text-1-3-2">
+</div><ul class="org-ul"><li><a id="sec-1-3-2-1" name="sec-1-3-2-1"></a>both of them's type is (result, input) ⟶ result<br  /><div class="outline-text-5" id="text-1-3-2-1">
+<div class="org-src-container">
+
+<pre class="src src-clojure"><span style="color: #A1EFE4;">(</span><span style="color: #E6DB74;">(</span>mapping inc<span style="color: #E6DB74;">)</span> conj<span style="color: #A1EFE4;">)</span>
+<span style="color: #A1EFE4;">(</span><span style="color: #E6DB74;">(</span>filtering even?<span style="color: #E6DB74;">)</span> conj<span style="color: #A1EFE4;">)</span>.
+</pre>
+</div>
+</div>
+</li>
+
+<li><a id="sec-1-3-2-2" name="sec-1-3-2-2"></a>so we could compose two functions like this<br  /><div class="outline-text-5" id="text-1-3-2-2">
+<ul class="org-ul">
+<li><code>((filtering even?) conj)</code>'s return type is <b>(result, input) ⟶ result</b>
+</li>
+<li><code>(mapping inc)</code>'s expected arg type is <b>(result, input) ⟶ result</b>
+</li>
+</ul>
+<div class="org-src-container">
+
+<pre class="src src-clojure"><span style="color: #A1EFE4;">(</span><span style="color: #E6DB74;">(</span>mapping inc<span style="color: #E6DB74;">)</span> <span style="color: #E6DB74;">(</span><span style="color: #66D9EF;">(</span>filtering even?<span style="color: #66D9EF;">)</span> conj<span style="color: #E6DB74;">)</span><span style="color: #A1EFE4;">)</span>
+</pre>
+</div>
+</div>
+</li></ul>
+</div>
+</div>
+
+<div id="outline-container-sec-1-4" class="outline-3">
+<h3 id="sec-1-4">Summary</h3>
+<div class="outline-text-3" id="text-1-4">
+<ul class="org-ul">
+<li><b>Tranducer</b> is a function which type is <b>(result, input ⟶ result) ⟶ (result, input ⟶ result)</b>
+</li>
+<li>So <code>(mapping inc)</code> is <del>Tranducer</del>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-1-5" class="outline-3">
+<h3 id="sec-1-5">Appendix</h3>
+<div class="outline-text-3" id="text-1-5">
+</div><div id="outline-container-sec-1-5-1" class="outline-4">
+<h4 id="sec-1-5-1">Tranducer is coming in Clojure 1.7.0</h4>
+</div>
+<div id="outline-container-sec-1-5-2" class="outline-4">
+<h4 id="sec-1-5-2">Transducer can work across core.async channels</h4>
+<div class="outline-text-4" id="text-1-5-2">
+<div class="org-src-container">
+
+<pre class="src src-clojure"><span style="color: #A1EFE4;">(</span><span style="color: #F92672;">defn</span> <span style="color: #A6E22E;">square</span> <span style="color: #E6DB74;">[</span>x<span style="color: #E6DB74;">]</span> <span style="color: #E6DB74;">(</span>* x x<span style="color: #E6DB74;">)</span><span style="color: #A1EFE4;">)</span>
+
+<span style="color: #A1EFE4;">(</span><span style="color: #F92672;">def</span> <span style="color: #FD971F;">xform</span>
+  <span style="color: #E6DB74;">(</span>comp
+    <span style="color: #66D9EF;">(</span>filter even?<span style="color: #66D9EF;">)</span>
+    <span style="color: #66D9EF;">(</span>filter #<span style="color: #FD971F;">(</span>&lt; <span style="color: #FD971F;">%</span> <span style="color: #AE81FF;">10</span><span style="color: #FD971F;">)</span><span style="color: #66D9EF;">)</span>
+    <span style="color: #66D9EF;">(</span>map square<span style="color: #66D9EF;">)</span>
+    <span style="color: #66D9EF;">(</span>map inc<span style="color: #66D9EF;">)</span><span style="color: #E6DB74;">)</span><span style="color: #A1EFE4;">)</span>
+
+<span style="color: #A1EFE4;">(</span><span style="color: #F92672;">def</span> <span style="color: #FD971F;">my-chan</span> <span style="color: #E6DB74;">(</span><span style="color: #66D9EF;">async</span>/chan <span style="color: #AE81FF;">1</span> xform<span style="color: #E6DB74;">)</span><span style="color: #A1EFE4;">)</span>
+
+<span style="color: #FE87F4;">; </span><span style="color: #FE87F4;">Waiting for an item to print...</span>
+<span style="color: #A1EFE4;">(</span><span style="color: #66D9EF;">async</span>/take! my-chan println<span style="color: #A1EFE4;">)</span>
+
+<span style="color: #A1EFE4;">(</span><span style="color: #66D9EF;">async</span>/put! my-chan <span style="color: #AE81FF;">3</span><span style="color: #A1EFE4;">)</span>
+<span style="color: #FE87F4;">; </span><span style="color: #FE87F4;">nothing printed to screen, since 3 is not even</span>
+
+<span style="color: #A1EFE4;">(</span><span style="color: #66D9EF;">async</span>/put! my-chan <span style="color: #AE81FF;">4</span><span style="color: #A1EFE4;">)</span>
+<span style="color: #FE87F4;">; </span><span style="color: #FE87F4;">"17" printed to screen, since 4 is even and less than 10</span>
+</pre>
+</div>
+
+<p>
+Note: Did you know this? I didn't.
+First, note that channel buffers are linked lists underneath (in fact, java.util.LinkedLists).
+When you put an item into a channel, the internal helper method add! is called to add your item into the buffer.
+</p>
+
+<p>
+But if a transducer xform is supplied, core.async will use add! as the reducing function passed into xform:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-clojure"><span style="color: #A1EFE4;">(</span>xform add!<span style="color: #A1EFE4;">)</span> <span style="color: #FE87F4;">;; </span><span style="color: #FE87F4;">add!'s type is (result, input) -&gt; input</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>

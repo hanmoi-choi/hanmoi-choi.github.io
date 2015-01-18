@@ -1,6 +1,6 @@
 ---
 layout: page
-title: About
+title: About me 
 ---
 
-Read my code on [GitHub](http://github.com/hanmoi-choi), find my CV on [LinkedIn](http://an.linkedin.com/pub/hanmoi-daniel-choi).
+This is a static page. It could be an 'about page' if you'd like.

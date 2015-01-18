@@ -1,0 +1,41 @@
+---
+layout: default
+title: Debugging with Rubymine
+excerpt: How to setup env to debug Rails localhost app having ~subdomain~
+categories:
+- Rubymine, Debugging, RubyOnRails
+tags:
+- [Rubymine, Debugging, RubyOnRails]
+---
+
+<p>
+I had to spend one day to find out how to test localhost having subdomain when I use Rubymine IDE.
+Rubymine is great tool but there is no way to setup subdomain in <b>Run</b> configuration.
+</p>
+
+<p>
+This is how to resolve my problem
+</p>
+
+<ol class="org-ol">
+<li>Setup Rubymine as usual like below
+</li>
+</ol>
+<p>
+<a href="file:///Users/daniel/Desktop/ScreenCapture at Sat Jan 17 21:47:10 AEDT 2015.png">Rubymine Setting</a>
+</p>
+
+<ol class="org-ol">
+<li>So I had to change my MBP's hosts file; <code>/etc/hosts</code>
+<ul class="org-ul">
+<li><b>myadbox.dev</b> is test domain and <b>audi</b> is subdomain
+</li>
+</ul>
+</li>
+</ol>
+<div class="org-src-container">
+
+<pre class="src src-bash">127.0.0.1	localhost
+127.0.0.1 audi.myadbox.dev
+</pre>
+</div>
