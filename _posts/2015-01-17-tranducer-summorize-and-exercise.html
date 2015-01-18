@@ -22,27 +22,27 @@ All content is from this <a href="http://elbenshira.com/blog/understanding-trans
 <div class="outline-text-3" id="text-1-1">
 <div class="org-src-container">
 
-<pre class="src src-clojure"><span style="color: #A1EFE4;">(</span>map inc <span style="color: #E6DB74;">(</span>range <span style="color: #AE81FF;">10</span><span style="color: #E6DB74;">)</span><span style="color: #A1EFE4;">)</span>
-<span style="color: #A1EFE4;">(</span>filter even? '<span style="color: #E6DB74;">(</span><span style="color: #AE81FF;">1</span> <span style="color: #AE81FF;">2</span> <span style="color: #AE81FF;">3</span> <span style="color: #AE81FF;">4</span> <span style="color: #AE81FF;">5</span> <span style="color: #AE81FF;">6</span> <span style="color: #AE81FF;">7</span> <span style="color: #AE81FF;">8</span> <span style="color: #AE81FF;">9</span> <span style="color: #AE81FF;">10</span><span style="color: #E6DB74;">)</span><span style="color: #A1EFE4;">)</span>
+<pre class="src src-clojure"><span style="color: #A1EFE4;">(</span>map inc <span style="color: #E6DB74;">(</span>range 10<span style="color: #E6DB74;">)</span><span style="color: #A1EFE4;">)</span>
+<span style="color: #A1EFE4;">(</span>filter even? '<span style="color: #E6DB74;">(</span>1 2 3 4 5 6 7 8 9 10<span style="color: #E6DB74;">)</span><span style="color: #A1EFE4;">)</span>
 
 <span style="color: #A1EFE4;">(</span><span style="color: #F92672;">defn</span> <span style="color: #A6E22E;">map-inc-reducer</span> <span style="color: #E6DB74;">[</span>res in<span style="color: #E6DB74;">]</span>
   <span style="color: #E6DB74;">(</span>conj res <span style="color: #66D9EF;">(</span>inc in<span style="color: #66D9EF;">)</span><span style="color: #E6DB74;">)</span><span style="color: #A1EFE4;">)</span>
 
-<span style="color: #A1EFE4;">(</span>reduce map-inc-reducer <span style="color: #E6DB74;">[]</span> <span style="color: #E6DB74;">(</span>range <span style="color: #AE81FF;">10</span><span style="color: #E6DB74;">)</span><span style="color: #A1EFE4;">)</span>
+<span style="color: #A1EFE4;">(</span>reduce map-inc-reducer <span style="color: #E6DB74;">[]</span> <span style="color: #E6DB74;">(</span>range 10<span style="color: #E6DB74;">)</span><span style="color: #A1EFE4;">)</span>
 
 <span style="color: #A1EFE4;">(</span><span style="color: #F92672;">defn</span> <span style="color: #A6E22E;">map-reducer</span>
   <span style="color: #E6DB74;">[</span>f<span style="color: #E6DB74;">]</span>
   <span style="color: #E6DB74;">(</span><span style="color: #F92672;">fn</span> <span style="color: #66D9EF;">[</span>res in<span style="color: #66D9EF;">]</span>
     <span style="color: #66D9EF;">(</span>conj res <span style="color: #FD971F;">(</span>f in<span style="color: #FD971F;">)</span><span style="color: #66D9EF;">)</span><span style="color: #E6DB74;">)</span><span style="color: #A1EFE4;">)</span>
 <span style="color: #FE87F4;">;; </span><span style="color: #FE87F4;">(map-reducer inc) == (map-inc-reducer)</span>
-<span style="color: #A1EFE4;">(</span>reduce <span style="color: #E6DB74;">(</span>map-reducer inc<span style="color: #E6DB74;">)</span> <span style="color: #E6DB74;">[]</span> <span style="color: #E6DB74;">(</span>range <span style="color: #AE81FF;">10</span><span style="color: #E6DB74;">)</span><span style="color: #A1EFE4;">)</span>
+<span style="color: #A1EFE4;">(</span>reduce <span style="color: #E6DB74;">(</span>map-reducer inc<span style="color: #E6DB74;">)</span> <span style="color: #E6DB74;">[]</span> <span style="color: #E6DB74;">(</span>range 10<span style="color: #E6DB74;">)</span><span style="color: #A1EFE4;">)</span>
 
 <span style="color: #A1EFE4;">(</span><span style="color: #F92672;">defn</span> <span style="color: #A6E22E;">filter-even-reducer</span>
   <span style="color: #E6DB74;">[</span>result input<span style="color: #E6DB74;">]</span>
   <span style="color: #E6DB74;">(</span><span style="color: #F92672;">if</span> <span style="color: #66D9EF;">(</span>even? input<span style="color: #66D9EF;">)</span>
     <span style="color: #66D9EF;">(</span>conj result input<span style="color: #66D9EF;">)</span>
     result<span style="color: #E6DB74;">)</span><span style="color: #A1EFE4;">)</span>
-<span style="color: #A1EFE4;">(</span>reduce filter-even-reducer <span style="color: #E6DB74;">[]</span> '<span style="color: #E6DB74;">(</span><span style="color: #AE81FF;">1</span> <span style="color: #AE81FF;">2</span> <span style="color: #AE81FF;">3</span> <span style="color: #AE81FF;">4</span> <span style="color: #AE81FF;">5</span> <span style="color: #AE81FF;">6</span> <span style="color: #AE81FF;">7</span> <span style="color: #AE81FF;">8</span> <span style="color: #AE81FF;">9</span> <span style="color: #AE81FF;">10</span><span style="color: #E6DB74;">)</span><span style="color: #A1EFE4;">)</span>
+<span style="color: #A1EFE4;">(</span>reduce filter-even-reducer <span style="color: #E6DB74;">[]</span> '<span style="color: #E6DB74;">(</span>1 2 3 4 5 6 7 8 9 10<span style="color: #E6DB74;">)</span><span style="color: #A1EFE4;">)</span>
 
 <span style="color: #A1EFE4;">(</span><span style="color: #F92672;">defn</span> <span style="color: #A6E22E;">filter-reducer</span>
   <span style="color: #E6DB74;">[</span>f<span style="color: #E6DB74;">]</span>
@@ -169,19 +169,19 @@ All content is from this <a href="http://elbenshira.com/blog/understanding-trans
 <span style="color: #A1EFE4;">(</span><span style="color: #F92672;">def</span> <span style="color: #FD971F;">xform</span>
   <span style="color: #E6DB74;">(</span>comp
     <span style="color: #66D9EF;">(</span>filter even?<span style="color: #66D9EF;">)</span>
-    <span style="color: #66D9EF;">(</span>filter #<span style="color: #FD971F;">(</span>&lt; <span style="color: #FD971F;">%</span> <span style="color: #AE81FF;">10</span><span style="color: #FD971F;">)</span><span style="color: #66D9EF;">)</span>
+    <span style="color: #66D9EF;">(</span>filter #<span style="color: #FD971F;">(</span>&lt; <span style="color: #FD971F;">%</span> 10<span style="color: #FD971F;">)</span><span style="color: #66D9EF;">)</span>
     <span style="color: #66D9EF;">(</span>map square<span style="color: #66D9EF;">)</span>
     <span style="color: #66D9EF;">(</span>map inc<span style="color: #66D9EF;">)</span><span style="color: #E6DB74;">)</span><span style="color: #A1EFE4;">)</span>
 
-<span style="color: #A1EFE4;">(</span><span style="color: #F92672;">def</span> <span style="color: #FD971F;">my-chan</span> <span style="color: #E6DB74;">(</span><span style="color: #66D9EF;">async</span>/chan <span style="color: #AE81FF;">1</span> xform<span style="color: #E6DB74;">)</span><span style="color: #A1EFE4;">)</span>
+<span style="color: #A1EFE4;">(</span><span style="color: #F92672;">def</span> <span style="color: #FD971F;">my-chan</span> <span style="color: #E6DB74;">(</span><span style="color: #66D9EF;">async</span>/chan 1 xform<span style="color: #E6DB74;">)</span><span style="color: #A1EFE4;">)</span>
 
 <span style="color: #FE87F4;">; </span><span style="color: #FE87F4;">Waiting for an item to print...</span>
 <span style="color: #A1EFE4;">(</span><span style="color: #66D9EF;">async</span>/take! my-chan println<span style="color: #A1EFE4;">)</span>
 
-<span style="color: #A1EFE4;">(</span><span style="color: #66D9EF;">async</span>/put! my-chan <span style="color: #AE81FF;">3</span><span style="color: #A1EFE4;">)</span>
+<span style="color: #A1EFE4;">(</span><span style="color: #66D9EF;">async</span>/put! my-chan 3<span style="color: #A1EFE4;">)</span>
 <span style="color: #FE87F4;">; </span><span style="color: #FE87F4;">nothing printed to screen, since 3 is not even</span>
 
-<span style="color: #A1EFE4;">(</span><span style="color: #66D9EF;">async</span>/put! my-chan <span style="color: #AE81FF;">4</span><span style="color: #A1EFE4;">)</span>
+<span style="color: #A1EFE4;">(</span><span style="color: #66D9EF;">async</span>/put! my-chan 4<span style="color: #A1EFE4;">)</span>
 <span style="color: #FE87F4;">; </span><span style="color: #FE87F4;">"17" printed to screen, since 4 is even and less than 10</span>
 </pre>
 </div>
